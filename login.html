@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url(anderson.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .box {
+            padding: 20px 30px;
+            width: 300px;
+            height: 500px;
+            backdrop-filter: blur(50px);
+            border-radius: 5px;
+            background: rgba(49, 49, 49, .2);
+            border: 1px solid rgba(255, 255, 255, .5);
+        }
+        .box .form {
+            padding: 10px 20px;
+        }
+        .box .form h2 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        .box .form form {
+            margin-top: 50px;
+            align-items: center;
+        }
+        .box .form form .inputbox input {
+            padding: 10px 20px;
+            border: none;
+            outline: none;
+            background: none;
+            border-bottom: 1px solid #12151e;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        .box .form form .inputbox span {
+            position: absolute;
+            transform: translateY(-80px);
+            font-size: 14px;
+            color: #fff;
+        }
+        .box .form form .sub {
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            outline: none;
+            background: #0cc0df;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #fff;
+        }
+        .register-link a {
+            color: #0cc0df;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .register-link i {
+            margin-right: 8px;
+        }
+        /* Style for alert */
+        .alert {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+        .alert-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        .alert-content h2 {
+            margin-bottom: 20px;
+        }
+        .alert-content button {
+            padding: 10px 20px;
+            background: #0cc0df;
+            color: #fff;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="form">
+            <h2>Sign In</h2>
+            <form id="loginForm">
+                <div class="inputbox">
+                    <input type="text" name="username" id="username" required>
+                    <span>Username</span>
+                </div>
+                <div class="inputbox">
+                    <input type="email" name="email" id="email" required>
+                    <span>Email</span>
+                </div>
+                <div class="inputbox">
+                    <input type="password" name="password" id="password" required>
+                    <span>Password</span>
+                </div>
+                <input type="submit" value="Login" class="sub" id="submit">
+            </form>
+            <div class="register-link">
+                <a href="register.php">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert" id="alert" style="display: none;">
+        <div class="alert-content">
+            <h2 id="alert-message"></h2>
+            <button onclick="closeAlert()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Close the alert popup
+        function closeAlert() {
+            document.getElementById('alert').style.display = 'none';
+        }
+
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get the form values
+            let username = document.getElementById('username').value;
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+
+            // Create a FormData object to send via POST
+            let formData = new FormData();
+            formData.append('username', username);
+            formData.append('email', email);
+            formData.append('password', password);
+
+            // Send an AJAX request to the backend (login.php)
+            fetch('login.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to dashboard if login is successful
+                    window.location.href = 'dashboard.php';
+                } else {
+                    // Show error message if login failed
+                    document.getElementById('alert-message').innerText = data.message;
+                    document.getElementById('alert').style.display = 'flex';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
